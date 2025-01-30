@@ -1,0 +1,32 @@
+server:
+  port: 8088
+  servlet:
+    context-path: '/Culinaryapi-Order-Service/'
+
+spring:
+  application:
+    name: Culinaryapi-UserService
+  datasource:
+    url: jdbc:postgresql://localhost:5432/Culinaryapi-OrderService
+    username: postgres
+    password: 123
+  jpa:
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      jdbc:
+        lob:
+          non-contextual-creation: true
+    properties:
+      hibernate:
+        show_sql: true
+  rabbitmq:
+    addresses: amqps://xewpbrhs:8oQrjnoywt93dUlmRNHyLiktNDnydxcp@leopard.lmq.cloudamqp.com/xewpbrhs
+
+Culinary:
+  broker:
+    exchange:
+      userServiceEvent: Culinary.userServiceEvent
+    queue:
+      userServiceEventQueue:
+        name: Culinary.userServiceEvent.ms.OrderService
