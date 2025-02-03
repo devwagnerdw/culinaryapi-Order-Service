@@ -1,4 +1,4 @@
-package com.culinaryapi.Order_Service.model;
+package com.culinaryapi.Order_Service.models;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;

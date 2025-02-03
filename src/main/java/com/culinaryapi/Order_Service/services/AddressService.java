@@ -1,10 +1,6 @@
 package com.culinaryapi.Order_Service.services;
 
-
-
-import com.culinaryapi.Order_Service.model.AddressModel;
-
-import java.util.UUID;
+import com.culinaryapi.Order_Service.models.AddressModel;
 
 public interface AddressService {
 

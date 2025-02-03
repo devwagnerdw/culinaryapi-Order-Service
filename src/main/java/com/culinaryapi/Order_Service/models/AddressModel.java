@@ -1,8 +1,7 @@
-package com.culinaryapi.Order_Service.model;
+package com.culinaryapi.Order_Service.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import org.springframework.beans.BeanUtils;
 
 import java.util.UUID;
 
@@ -10,7 +9,6 @@ import java.util.UUID;
 @Entity
 public class AddressModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID addressId;
 
     private String street;
@@ -40,20 +38,20 @@ public class AddressModel {
         this.street = street;
     }
 
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
     public String getCity() {
         return city;
     }
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 
     public String getPostalCode() {
@@ -78,5 +76,9 @@ public class AddressModel {
 
     public void setUser(UserModel user) {
         this.user = user;
+    }
+
+    public UUID getUserId() {
+        return user.getUserId();
     }
 }

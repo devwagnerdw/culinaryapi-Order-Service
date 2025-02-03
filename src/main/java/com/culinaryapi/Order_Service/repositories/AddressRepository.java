@@ -1,6 +1,6 @@
 package com.culinaryapi.Order_Service.repositories;
 
-import com.culinaryapi.Order_Service.model.AddressModel;
+import com.culinaryapi.Order_Service.models.AddressModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

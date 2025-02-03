@@ -1,7 +1,7 @@
 package com.culinaryapi.Order_Service.dtos;
 
 
-import com.culinaryapi.Order_Service.model.UserModel;
+import com.culinaryapi.Order_Service.models.UserModel;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.beans.BeanUtils;
 

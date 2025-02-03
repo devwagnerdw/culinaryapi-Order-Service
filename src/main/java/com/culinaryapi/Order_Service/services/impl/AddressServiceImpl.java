@@ -1,7 +1,7 @@
 package com.culinaryapi.Order_Service.services.impl;
 
 
-import com.culinaryapi.Order_Service.model.AddressModel;
+import com.culinaryapi.Order_Service.models.AddressModel;
 import com.culinaryapi.Order_Service.repositories.AddressRepository;
 import com.culinaryapi.Order_Service.services.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;

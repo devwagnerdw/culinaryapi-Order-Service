@@ -1,11 +1,10 @@
 package com.culinaryapi.Order_Service.consumers;
 
 
-import com.culinaryapi.Order_Service.dtos.UserEventDto;
 import com.culinaryapi.Order_Service.dtos.UserServiceEventDto;
 import com.culinaryapi.Order_Service.enums.ActionType;
-import com.culinaryapi.Order_Service.model.AddressModel;
-import com.culinaryapi.Order_Service.model.UserModel;
+import com.culinaryapi.Order_Service.models.AddressModel;
+import com.culinaryapi.Order_Service.models.UserModel;
 import com.culinaryapi.Order_Service.services.AddressService;
 import com.culinaryapi.Order_Service.services.UserService;
 import org.springframework.amqp.core.ExchangeTypes;
@@ -17,7 +16,6 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Component
 public class UserServiceConsumer {
@@ -36,29 +34,12 @@ public class UserServiceConsumer {
     )
     public void listenUserEvent(@Payload UserServiceEventDto userServiceEventDto) {
 
-        if (userServiceEventDto.getUserId() == null) {
-            System.err.println("Erro: userId é nulo. Mensagem descartada.");
-            return;
-        }
-        System.out.println("🔍 Detalhes do DTO recebido:");
-        System.out.println("UserId: " + userServiceEventDto.getUserId());
-        System.out.println("ActionType: " + userServiceEventDto.getActionType());
-        System.out.println("AddressId: " + userServiceEventDto.getAddressId());
-        System.out.println("Street: " + userServiceEventDto.getStreet());
-        System.out.println("City: " + userServiceEventDto.getCity());
-        System.out.println("State: " + userServiceEventDto.getState());
-        System.out.println("PostalCode: " + userServiceEventDto.getPostalCode());
-        System.out.println("Country: " + userServiceEventDto.getCountry());
-
-        UUID userId = userServiceEventDto.getUserId();
-        Optional<UserModel> optionalUser = userService.findById(userId);
-
+        Optional<UserModel> optionalUser = userService.findById(userServiceEventDto.getUserId());
         if (optionalUser.isEmpty()) {
             return;
         }
-
-        UserModel user = optionalUser.get();
-        AddressModel addressModel = convertToAddressModel(userServiceEventDto, user);
+        UserModel userModel = optionalUser.get();
+        AddressModel addressModel = convertToAddressModel(userServiceEventDto, userModel);
 
         switch (ActionType.valueOf(userServiceEventDto.getActionType())) {
             case CREATE:
@@ -70,15 +51,15 @@ public class UserServiceConsumer {
         }
     }
 
-    private AddressModel convertToAddressModel(UserServiceEventDto dto, UserModel user) {
-        AddressModel address = new AddressModel();
-        address.setAddressId(dto.getAddressId());
-        address.setStreet(dto.getStreet());
-        address.setCity(dto.getCity());
-        address.setState(dto.getState());
-        address.setPostalCode(dto.getPostalCode());
-        address.setCountry(dto.getCountry());
-        address.setUser(user);
-        return address;
+    private AddressModel convertToAddressModel(UserServiceEventDto userServiceEventDto, UserModel userModel) {
+        var addressModel = new AddressModel();
+        addressModel.setAddressId(userServiceEventDto.getAddressId());
+        addressModel.setStreet(userServiceEventDto.getStreet());
+        addressModel.setCity(userServiceEventDto.getCity());
+        addressModel.setState(userServiceEventDto.getState());
+        addressModel.setPostalCode(userServiceEventDto.getPostalCode());
+        addressModel.setCountry(userServiceEventDto.getCountry());
+        addressModel.setUser(userModel);
+        return addressModel;
     }
 }
