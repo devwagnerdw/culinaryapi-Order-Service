@@ -19,7 +19,7 @@ public class RabbitmqConfig {
         this.cachingConnectionFactory = cachingConnectionFactory;
     }
 
-    @Value(value="${Culinary.broker.exchange.userServiceEvent}")
+    @Value(value="${Culinary.broker.exchange.userEventExchange}")
     private String exchangeUserServiceEvent;
 
     @Bean

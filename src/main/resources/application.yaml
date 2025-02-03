@@ -1,11 +1,11 @@
 server:
-  port: 8088
+  port: 8089
   servlet:
     context-path: '/Culinaryapi-Order-Service/'
 
 spring:
   application:
-    name: Culinaryapi-UserService
+    name: CulinaryApi-UserService
   datasource:
     url: jdbc:postgresql://localhost:5432/Culinaryapi-OrderService
     username: postgres
@@ -26,7 +26,10 @@ spring:
 Culinary:
   broker:
     exchange:
+      userEventExchange: Culinary.userevent
       userServiceEvent: Culinary.userServiceEvent
     queue:
+      userEventQueue:
+        name: Culinary.userevent.ms.OrderService
       userServiceEventQueue:
         name: Culinary.userServiceEvent.ms.OrderService
