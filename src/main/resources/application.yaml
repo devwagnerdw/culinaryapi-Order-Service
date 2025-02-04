@@ -5,7 +5,7 @@ server:
 
 spring:
   application:
-    name: CulinaryApi-UserService
+    name: CulinaryApi-OrderService
   datasource:
     url: jdbc:postgresql://localhost:5432/Culinaryapi-OrderService
     username: postgres
@@ -28,8 +28,11 @@ Culinary:
     exchange:
       userEventExchange: Culinary.userevent
       userServiceEvent: Culinary.userServiceEvent
+      menuEvent: Culinary.MenuService
     queue:
       userEventQueue:
         name: Culinary.userevent.ms.OrderService
       userServiceEventQueue:
         name: Culinary.userServiceEvent.ms.OrderService
+      menuEventQueue:
+        name: Culinary.menuserviceEvent.ms.OrderService

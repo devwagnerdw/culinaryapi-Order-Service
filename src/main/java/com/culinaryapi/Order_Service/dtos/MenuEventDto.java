@@ -1,34 +1,20 @@
-package com.culinaryapi.Order_Service.models;
+package com.culinaryapi.Order_Service.dtos;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.culinaryapi.Order_Service.models.ProductModel;
+import org.springframework.beans.BeanUtils;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
-@Entity
-@Table(name = "TB_Product")
-public class ProductModel {
+public class MenuEventDto {
 
-    @Id
     private UUID productId;
-
-    @Column(nullable = false, unique = true, length = 30)
     private String name;
-
-    @Column
     private String description;
-
-    @Column
     private String category;
-
-    @Column(nullable = false)
     private BigDecimal price;
-
-    @Column(nullable = false)
     private Boolean available;
+    private String actionType;
 
     public UUID getProductId() {
         return productId;
@@ -46,20 +32,20 @@ public class ProductModel {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public String getCategory() {
         return category;
     }
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public BigDecimal getPrice() {
@@ -76,5 +62,19 @@ public class ProductModel {
 
     public void setAvailable(Boolean available) {
         this.available = available;
+    }
+
+    public String getActionType() {
+        return actionType;
+    }
+
+    public void setActionType(String actionType) {
+        this.actionType = actionType;
+    }
+
+    public ProductModel convertToProductModel(){
+        var productModel = new ProductModel();
+        BeanUtils.copyProperties(this, productModel);
+        return productModel;
     }
 }
