@@ -1,5 +1,6 @@
 package com.culinaryapi.Order_Service.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -9,14 +10,13 @@ import java.util.UUID;
 public class OrderItemModel {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID orderItemId;
 
     @Column(nullable = false)
     private Integer quantity;
 
-    @Column(nullable = false)
-    private BigDecimal price;
-
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
     private OrderModel order;
@@ -40,14 +40,6 @@ public class OrderItemModel {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
     }
 
     public OrderModel getOrder() {

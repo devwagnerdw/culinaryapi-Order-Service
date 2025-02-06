@@ -1,6 +1,8 @@
 package com.culinaryapi.Order_Service.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.UUID;
@@ -17,7 +19,8 @@ public class AddressModel {
     private String postalCode;
     private String country;
 
-    @JsonBackReference
+
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id",nullable = false)
     private UserModel user;

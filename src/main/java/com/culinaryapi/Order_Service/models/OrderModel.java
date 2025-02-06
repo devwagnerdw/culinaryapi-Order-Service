@@ -1,5 +1,6 @@
 package com.culinaryapi.Order_Service.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ import java.util.UUID;
 public class OrderModel {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID orderId;
 
     @Column(nullable = false)
@@ -26,6 +28,11 @@ public class OrderModel {
     @JoinColumn(name = "user_id", nullable = false)
     private UserModel user;
 
+    @ManyToOne
+    @JoinColumn(name = "address_id", nullable = false)
+    private AddressModel address; // Novo campo
+
+    @JsonManagedReference // Adicione esta anotação
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<OrderItemModel> orderItems;
 
@@ -70,7 +77,19 @@ public class OrderModel {
         this.user = user;
     }
 
+    public AddressModel getAddress() {
+        return address;
+    }
+
+    public void setAddress(AddressModel address) {
+        this.address = address;
+    }
+
     public Set<OrderItemModel> getOrderItems() {
         return orderItems;
+    }
+
+    public void setOrderItems(Set<OrderItemModel> orderItems) {
+        this.orderItems = orderItems;
     }
 }

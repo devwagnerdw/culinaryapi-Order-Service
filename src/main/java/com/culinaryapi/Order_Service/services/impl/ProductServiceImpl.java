@@ -5,6 +5,9 @@ import com.culinaryapi.Order_Service.repositories.ProductRepository;
 import com.culinaryapi.Order_Service.services.ProductService;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Service
 public class ProductServiceImpl implements ProductService {
 
@@ -17,5 +20,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void save(ProductModel productModel) {
         productRepository.save(productModel);
+    }
+
+    @Override
+    public Optional<ProductModel> findById(UUID productId) {
+        return productRepository.findById(productId);
     }
 }
