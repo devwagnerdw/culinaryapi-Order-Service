@@ -1,6 +1,7 @@
 package com.culinaryapi.Order_Service.controllers;
 
 import com.culinaryapi.Order_Service.dtos.OrderDto;
+import com.culinaryapi.Order_Service.exception.NotFoundException;
 import com.culinaryapi.Order_Service.models.OrderModel;
 import com.culinaryapi.Order_Service.services.OrderService;
 import org.springframework.http.HttpStatus;
@@ -17,17 +18,13 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    public OrderController( OrderService orderService) {
+    public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
 
     @PostMapping
-    public ResponseEntity<Object> registerOrder(@RequestBody @Validated OrderDto orderDto) {
-        try {
-            OrderModel orderModel = orderService.registerOrder(orderDto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(orderModel);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        }
+    public ResponseEntity<OrderModel> registerOrder(@RequestBody @Validated OrderDto orderDto) {
+        OrderModel orderModel = orderService.registerOrder(orderDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderModel);
     }
 }

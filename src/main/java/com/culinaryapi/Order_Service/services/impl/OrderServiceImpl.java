@@ -1,6 +1,5 @@
 package com.culinaryapi.Order_Service.services.impl;
 
-
 import com.culinaryapi.Order_Service.dtos.OrderDto;
 import com.culinaryapi.Order_Service.dtos.OrderItemDTO;
 import com.culinaryapi.Order_Service.enums.OrderStatus;
@@ -16,9 +15,10 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.Optional;
+import java.util.Map;
 import java.util.Set;
-
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -27,7 +27,6 @@ public class OrderServiceImpl implements OrderService {
     private final AddressRepository addressRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
-
 
     public OrderServiceImpl(OrderRepository orderRepository, AddressRepository addressRepository, UserRepository userRepository, ProductRepository productRepository) {
         this.orderRepository = orderRepository;
@@ -38,52 +37,47 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderModel registerOrder(OrderDto orderDto) {
+        UserModel userModel = userRepository.findById(orderDto.getUserId())
+                .orElseThrow(() -> new NotFoundException("User not found: " + orderDto.getUserId()));
 
-        Optional<UserModel> userModel = userRepository.findById(orderDto.getUserId());
-        if (userModel.isEmpty()) {
-            throw new NotFoundException("User not found" + orderDto.getUserId());
-        }
+        AddressModel addressModel = addressRepository.findByUser_UserIdAndAddressId(orderDto.getUserId(), orderDto.getAddressId())
+                .orElseThrow(() -> new NotFoundException("Address not found: " + orderDto.getAddressId()));
 
-        Optional<AddressModel> addressModel = addressRepository.findByUser_UserIdAndAddressId(orderDto.getUserId(), orderDto.getAddressId());
-        if (addressModel.isEmpty()) {
-            throw new NotFoundException("Address not found");
-        }
+        Set<UUID> productIds = orderDto.getOrderItems().stream()
+                .map(OrderItemDTO::getProductId)
+                .collect(Collectors.toSet());
 
+        Map<UUID, ProductModel> productMap = productRepository.findAllById(productIds).stream()
+                .collect(Collectors.toMap(ProductModel::getProductId, product -> product,
+                        (existing, replacement) -> existing,
+                        () -> {
+                            throw new NotFoundException("One or more products not found: " + productIds);
+                        }));
 
+        BigDecimal totalAmount = orderDto.getOrderItems().stream()
+                .map(orderItem -> productMap.get(orderItem.getProductId()).getPrice()
+                        .multiply(BigDecimal.valueOf(orderItem.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        BigDecimal totalAmount = BigDecimal.ZERO;
-        Set<OrderItemModel> orderItems = new HashSet<>();
-
-        for (OrderItemDTO orderItem : orderDto.getOrderItems()) {
-            Optional<ProductModel> optionalProductModel = productRepository.findById(orderItem.getProductId());
-            if (optionalProductModel.isEmpty()) {
-                throw new NotFoundException("Product not found with ID: " + orderItem.getProductId());
-            }
-
-            ProductModel product = optionalProductModel.get();
-            BigDecimal itemTotal = product.getPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity()));
-            totalAmount = totalAmount.add(itemTotal);
-
-            OrderItemModel orderItemModel = new OrderItemModel();
-            orderItemModel.setProduct(product);
-            orderItemModel.setQuantity(orderItem.getQuantity());
-            orderItems.add(orderItemModel);
-        }
+        Set<OrderItemModel> orderItems = orderDto.getOrderItems().stream()
+                .map(orderItem -> {
+                    OrderItemModel item = new OrderItemModel();
+                    item.setProduct(productMap.get(orderItem.getProductId()));
+                    item.setQuantity(orderItem.getQuantity());
+                    return item;
+                })
+                .collect(Collectors.toSet());
 
         OrderModel orderModel = new OrderModel();
         orderModel.setOrderDate(LocalDateTime.now());
         orderModel.setTotalAmount(totalAmount);
-        orderModel.setAddress(addressModel.get());
+        orderModel.setAddress(addressModel);
         orderModel.setOrderStatus(OrderStatus.PROCESSING);
-        orderModel.setUser(userModel.get());
-
-        for (OrderItemModel item : orderItems) {
-            item.setOrder(orderModel);
-        }
+        orderModel.setUser(userModel);
+        orderItems.forEach(item -> item.setOrder(orderModel));
         orderModel.setOrderItems(orderItems);
-        orderRepository.save(orderModel);
-        return orderModel;
 
-
+        return orderRepository.save(orderModel);
     }
+
 }
