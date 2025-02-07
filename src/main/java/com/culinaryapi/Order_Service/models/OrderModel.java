@@ -1,5 +1,6 @@
 package com.culinaryapi.Order_Service.models;
 
+import com.culinaryapi.Order_Service.enums.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
@@ -19,7 +20,7 @@ public class OrderModel {
     private LocalDateTime orderDate;
 
     @Column(nullable = false)
-    private String status;
+    private OrderStatus orderStatus;
 
     @Column(nullable = false)
     private BigDecimal totalAmount;
@@ -53,12 +54,12 @@ public class OrderModel {
         this.orderDate = orderDate;
     }
 
-    public String getStatus() {
-        return status;
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     public BigDecimal getTotalAmount() {

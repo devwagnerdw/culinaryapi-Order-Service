@@ -26,4 +26,9 @@ public class AddressServiceImpl implements AddressService {
     public Optional<AddressModel> findById(UUID addressId) {
         return addressRepository.findById(addressId);
     }
+
+    @Override
+    public Optional<AddressModel> findByUserIdAndAddressId(UUID userId, UUID addressId) {
+        return addressRepository.findByUser_UserIdAndAddressId(userId, addressId);
+    }
 }

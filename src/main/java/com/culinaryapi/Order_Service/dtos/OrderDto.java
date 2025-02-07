@@ -1,12 +1,16 @@
 package com.culinaryapi.Order_Service.dtos;
 
+import jakarta.validation.constraints.NotNull;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 
 public class OrderDto {
+    @NotNull
     private UUID userId;
+    @NotNull
     private UUID addressId;
     private Set<OrderItemDTO> orderItems;
 

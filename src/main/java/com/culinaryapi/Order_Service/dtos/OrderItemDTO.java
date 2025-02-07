@@ -1,9 +1,15 @@
 package com.culinaryapi.Order_Service.dtos;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.UUID;
 
 public class OrderItemDTO {
+
+    @NotNull
     private UUID productId;
+    @Min(1)
     private Integer quantity;
 
     public UUID getProductId() {

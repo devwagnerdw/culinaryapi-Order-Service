@@ -10,4 +10,6 @@ public interface AddressService {
     void save(AddressModel addressModel);
 
     Optional<AddressModel> findById(UUID addressId);
+
+    Optional<AddressModel> findByUserIdAndAddressId(UUID userId, UUID addressId);
 }
