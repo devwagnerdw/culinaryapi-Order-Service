@@ -48,25 +48,30 @@ public class OrderServiceImpl implements OrderService {
                 .collect(Collectors.toSet());
 
         Map<UUID, ProductModel> productMap = productRepository.findAllById(productIds).stream()
-                .collect(Collectors.toMap(ProductModel::getProductId, product -> product,
-                        (existing, replacement) -> existing,
-                        () -> {
-                            throw new NotFoundException("One or more products not found: " + productIds);
-                        }));
+                .collect(Collectors.toMap(ProductModel::getProductId, product -> product));
+
+        for (UUID productId : productIds) {
+            if (!productMap.containsKey(productId)) {
+                throw new NotFoundException("Product not found with ID: " + productId);
+            }
+        }
 
         BigDecimal totalAmount = orderDto.getOrderItems().stream()
-                .map(orderItem -> productMap.get(orderItem.getProductId()).getPrice()
-                        .multiply(BigDecimal.valueOf(orderItem.getQuantity())))
+                .map(orderItem -> {
+                    ProductModel product = productMap.get(orderItem.getProductId());
+                    return product.getPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity()));
+                })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        Set<OrderItemModel> orderItems = orderDto.getOrderItems().stream()
-                .map(orderItem -> {
-                    OrderItemModel item = new OrderItemModel();
-                    item.setProduct(productMap.get(orderItem.getProductId()));
-                    item.setQuantity(orderItem.getQuantity());
-                    return item;
-                })
-                .collect(Collectors.toSet());
+        Set<OrderItemModel> orderItems = new HashSet<>();
+        for (OrderItemDTO orderItem : orderDto.getOrderItems()) {
+            ProductModel product = productMap.get(orderItem.getProductId());
+
+            OrderItemModel orderItemModel = new OrderItemModel();
+            orderItemModel.setProduct(product);
+            orderItemModel.setQuantity(orderItem.getQuantity());
+            orderItems.add(orderItemModel);
+        }
 
         OrderModel orderModel = new OrderModel();
         orderModel.setOrderDate(LocalDateTime.now());
@@ -74,10 +79,13 @@ public class OrderServiceImpl implements OrderService {
         orderModel.setAddress(addressModel);
         orderModel.setOrderStatus(OrderStatus.PROCESSING);
         orderModel.setUser(userModel);
-        orderItems.forEach(item -> item.setOrder(orderModel));
+
+        for (OrderItemModel item : orderItems) {
+            item.setOrder(orderModel);
+        }
         orderModel.setOrderItems(orderItems);
 
-        return orderRepository.save(orderModel);
+        orderRepository.save(orderModel);
+        return orderModel;
     }
-
 }
