@@ -88,4 +88,14 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(orderModel);
         return orderModel;
     }
+
+    @Override
+    public OrderModel updateStatusOrder(UUID orderId, OrderDto orderDto) {
+        OrderModel orderModel = orderRepository.findById(orderId)
+                .orElseThrow(() -> new NotFoundException("Order not found: " + orderId));
+
+        orderModel.setOrderStatus(orderDto.getOrderStatus());
+        orderRepository.save(orderModel);
+        return orderModel;
+    }
 }

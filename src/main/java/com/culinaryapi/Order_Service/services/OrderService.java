@@ -9,4 +9,6 @@ import java.util.UUID;
 public interface OrderService {
 
     OrderModel registerOrder(OrderDto orderDto);
+
+    OrderModel updateStatusOrder(UUID orderId, OrderDto orderDto);
 }

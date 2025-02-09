@@ -1,5 +1,6 @@
 package com.culinaryapi.Order_Service.dtos;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
@@ -7,8 +8,12 @@ import java.util.UUID;
 
 public class OrderItemDTO {
 
-    @NotNull
+    @NotNull(groups = OrderDto.OrderView.NewOrderPost.class)
+    @JsonView(OrderDto.OrderView.NewOrderPost.class)
     private UUID productId;
+
+    @NotNull(groups = OrderDto.OrderView.NewOrderPost.class)
+    @JsonView(OrderDto.OrderView.NewOrderPost.class)
     @Min(1)
     private Integer quantity;
 
