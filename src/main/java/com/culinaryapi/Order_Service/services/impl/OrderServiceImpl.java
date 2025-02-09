@@ -3,6 +3,7 @@ package com.culinaryapi.Order_Service.services.impl;
 import com.culinaryapi.Order_Service.dtos.OrderDto;
 import com.culinaryapi.Order_Service.dtos.OrderItemDTO;
 import com.culinaryapi.Order_Service.enums.OrderStatus;
+import com.culinaryapi.Order_Service.exception.InvalidOperationException;
 import com.culinaryapi.Order_Service.exception.NotFoundException;
 import com.culinaryapi.Order_Service.models.*;
 import com.culinaryapi.Order_Service.repositories.AddressRepository;
@@ -10,6 +11,8 @@ import com.culinaryapi.Order_Service.repositories.OrderRepository;
 import com.culinaryapi.Order_Service.repositories.ProductRepository;
 import com.culinaryapi.Order_Service.repositories.UserRepository;
 import com.culinaryapi.Order_Service.services.OrderService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -94,8 +97,33 @@ public class OrderServiceImpl implements OrderService {
         OrderModel orderModel = orderRepository.findById(orderId)
                 .orElseThrow(() -> new NotFoundException("Order not found: " + orderId));
 
+        OrderStatus currentStatus = orderModel.getOrderStatus();
+        OrderStatus newStatus = orderDto.getOrderStatus();
+
+        if (!isStatusTransitionAllowed(currentStatus, newStatus)) {
+            throw new InvalidOperationException("Transition from " + currentStatus + " to " + newStatus + " is not allowed.");
+        }
+
         orderModel.setOrderStatus(orderDto.getOrderStatus());
         orderRepository.save(orderModel);
         return orderModel;
+    }
+
+    private boolean isStatusTransitionAllowed(OrderStatus currentStatus, OrderStatus newStatus) {
+        switch (currentStatus) {
+            case PENDING:
+                return newStatus == OrderStatus.PROCESSING || newStatus == OrderStatus.CANCELED;
+            case PROCESSING:
+                return newStatus == OrderStatus.SHIPPED || newStatus == OrderStatus.CANCELED;
+            case SHIPPED:
+                return newStatus == OrderStatus.DELIVERED || newStatus == OrderStatus.RETURNED;
+            case DELIVERED:
+                return newStatus == OrderStatus.RETURNED;
+            case CANCELED:
+            case RETURNED:
+                return false;
+            default:
+                throw new IllegalArgumentException("Invalid current status: " + currentStatus);
+        }
     }
 }

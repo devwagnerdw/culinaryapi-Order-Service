@@ -3,10 +3,7 @@ package com.culinaryapi.Order_Service.exception.handler;
 
 
 import com.culinaryapi.Order_Service.dtos.ErrorResponseDto;
-import com.culinaryapi.Order_Service.exception.BadRequestException;
-import com.culinaryapi.Order_Service.exception.BusinessException;
-import com.culinaryapi.Order_Service.exception.HttpClientException;
-import com.culinaryapi.Order_Service.exception.NotFoundException;
+import com.culinaryapi.Order_Service.exception.*;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -83,6 +80,15 @@ public class ResourceHandler {
                 .message(d.getMessage())
                 .httpStatus(HttpStatus.BAD_REQUEST)
                 .statusCode(HttpStatus.BAD_REQUEST.value())
+                .build());
+    }
+
+    @ExceptionHandler(InvalidOperationException.class)
+    public ResponseEntity<ErrorResponseDto> handleInvalidOperationException(InvalidOperationException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorResponseDto.builder()
+                .message(ex.getMessage())
+                .httpStatus(HttpStatus.CONFLICT)
+                .statusCode(HttpStatus.CONFLICT.value())
                 .build());
     }
 
