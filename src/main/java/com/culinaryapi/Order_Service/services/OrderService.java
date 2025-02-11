@@ -15,4 +15,7 @@ public interface OrderService {
     OrderModel updateStatusOrder(UUID orderId, OrderDto orderDto);
 
     Page<OrderModel> findAllByUserId(UUID userId, Specification<OrderModel> spec, Pageable pageable);
+
+    Page<OrderModel> findAll(Specification<OrderModel> spec, Pageable pageable);
 }
+

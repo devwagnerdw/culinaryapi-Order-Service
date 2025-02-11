@@ -113,9 +113,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Page<OrderModel> findAllByUserId(UUID userId, Specification<OrderModel> spec, Pageable pageable) {
-        Specification<OrderModel> combinedSpec = SpecificationTemplate.byUserId(userId).and(spec);
-        return orderRepository.findAll(combinedSpec, pageable);
+        return orderRepository.findAll(SpecificationTemplate.byUserId(userId).and(spec), pageable);
     }
+
+    @Override
+    public Page<OrderModel> findAll(Specification<OrderModel> spec, Pageable pageable) {
+        return orderRepository.findAll(spec, pageable);
+    }
+
 
     private boolean isStatusTransitionAllowed(OrderStatus currentStatus, OrderStatus newStatus) {
         switch (currentStatus) {

@@ -20,6 +20,7 @@ public class OrderModel {
     @Column(nullable = false)
     private LocalDateTime orderDate;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus orderStatus;
 
@@ -32,7 +33,7 @@ public class OrderModel {
 
     @ManyToOne
     @JoinColumn(name = "address_id", nullable = false)
-    private AddressModel address; // Novo campo
+    private AddressModel address;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
