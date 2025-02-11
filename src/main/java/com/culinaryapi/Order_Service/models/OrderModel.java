@@ -34,7 +34,7 @@ public class OrderModel {
     @JoinColumn(name = "address_id", nullable = false)
     private AddressModel address; // Novo campo
 
-    @JsonManagedReference // Adicione esta anotação
+    @JsonManagedReference
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<OrderItemModel> orderItems;
 

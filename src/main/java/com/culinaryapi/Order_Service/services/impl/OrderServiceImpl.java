@@ -11,8 +11,10 @@ import com.culinaryapi.Order_Service.repositories.OrderRepository;
 import com.culinaryapi.Order_Service.repositories.ProductRepository;
 import com.culinaryapi.Order_Service.repositories.UserRepository;
 import com.culinaryapi.Order_Service.services.OrderService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.culinaryapi.Order_Service.specifications.SpecificationTemplate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -107,6 +109,12 @@ public class OrderServiceImpl implements OrderService {
         orderModel.setOrderStatus(orderDto.getOrderStatus());
         orderRepository.save(orderModel);
         return orderModel;
+    }
+
+    @Override
+    public Page<OrderModel> findAllByUserId(UUID userId, Specification<OrderModel> spec, Pageable pageable) {
+        Specification<OrderModel> combinedSpec = SpecificationTemplate.byUserId(userId).and(spec);
+        return orderRepository.findAll(combinedSpec, pageable);
     }
 
     private boolean isStatusTransitionAllowed(OrderStatus currentStatus, OrderStatus newStatus) {
