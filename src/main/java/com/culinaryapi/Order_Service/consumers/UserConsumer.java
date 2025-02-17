@@ -4,6 +4,7 @@ package com.culinaryapi.Order_Service.consumers;
 import com.culinaryapi.Order_Service.dtos.UserEventDto;
 import com.culinaryapi.Order_Service.enums.ActionType;
 import com.culinaryapi.Order_Service.services.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
@@ -25,10 +26,9 @@ public class UserConsumer {
 
     @RabbitListener(bindings = @QueueBinding(
             value = @Queue(value = "${Culinary.broker.queue.userEventQueue.name}", durable = "true"),
-            exchange = @Exchange(value = "${Culinary.broker.exchange.userEventExchange}", type = ExchangeTypes.FANOUT, ignoreDeclarationExceptions = "true"))
+            exchange = @Exchange(value = "${Culinary.broker.exchange.userEventExchange}", type = ExchangeTypes.DIRECT, ignoreDeclarationExceptions = "true"),
+            key = "user.service.event") // Routing key
     )
-
-
     public void listenUserEvent(@Payload UserEventDto userEventDto){
 
 
@@ -38,6 +38,7 @@ public class UserConsumer {
             case CREATE:
             case UPDATE:
                 userService.save(userModel);
+                System.out.println("ESTOUUUUUUUUUU AQUIIIIIIIIIIIIIII");
                 break;
             case DELETE:
                 userService.delete(userEventDto.getUserId());

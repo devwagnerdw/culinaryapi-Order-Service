@@ -24,8 +24,9 @@ public class MenuConsumer {
 
 
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(value = "${Culinary.broker.queue.menuEventQueue.name}", durable = "true"),
-            exchange = @Exchange(value = "${Culinary.broker.exchange.menuEvent}", type = ExchangeTypes.FANOUT, ignoreDeclarationExceptions = "true"))
+            value = @Queue(value = "${Culinary.broker.queue.menuServiceEventQueue.name}", durable = "true"),
+            exchange = @Exchange(value = "${Culinary.broker.exchange.menuEventExchange}", type = ExchangeTypes.DIRECT, ignoreDeclarationExceptions = "true"),
+            key = "menu.service.event")
     )
 
 

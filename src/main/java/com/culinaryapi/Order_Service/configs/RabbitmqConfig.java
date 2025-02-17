@@ -2,7 +2,6 @@ package com.culinaryapi.Order_Service.configs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -19,8 +18,6 @@ public class RabbitmqConfig {
         this.cachingConnectionFactory = cachingConnectionFactory;
     }
 
-    @Value(value="${Culinary.broker.exchange.userEventExchange}")
-    private String exchangeUserServiceEvent;
 
     @Bean
     public RabbitTemplate rabbitTemplate(){

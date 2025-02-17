@@ -21,18 +21,18 @@ spring:
       hibernate:
         show_sql: true
   rabbitmq:
-    addresses: amqps://xewpbrhs:8oQrjnoywt93dUlmRNHyLiktNDnydxcp@leopard.lmq.cloudamqp.com/xewpbrhs
+    addresses: amqps://gxfhiqck:3sivG1zlLvv3W7SWQcK14y010juFScxm@leopard.lmq.cloudamqp.com/gxfhiqck
 
 Culinary:
   broker:
     exchange:
       userEventExchange: Culinary.userevent
-      userServiceEvent: Culinary.userServiceEvent
-      menuEvent: Culinary.MenuService
+      userServiceEventExchange: Culinary.userserviceevent
+      menuEventExchange: Culinary.MenuService
     queue:
       userEventQueue:
         name: Culinary.userevent.ms.OrderService
       userServiceEventQueue:
-        name: Culinary.userServiceEvent.ms.OrderService
-      menuEventQueue:
-        name: Culinary.menuserviceEvent.ms.OrderService
+        name: Culinary.userserviceevent.ms.OrderService
+      menuServiceEventQueue:
+        name: Culinary.MenuService.ms.OrderService

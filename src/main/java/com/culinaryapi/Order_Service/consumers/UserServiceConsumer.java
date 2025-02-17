@@ -30,7 +30,8 @@ public class UserServiceConsumer {
 
     @RabbitListener(bindings = @QueueBinding(
             value = @Queue(value = "${Culinary.broker.queue.userServiceEventQueue.name}", durable = "true"),
-            exchange = @Exchange(value = "${Culinary.broker.exchange.userServiceEvent}", type = ExchangeTypes.FANOUT, ignoreDeclarationExceptions = "true"))
+            exchange = @Exchange(value = "${Culinary.broker.exchange.userServiceEventExchange}", type = ExchangeTypes.DIRECT, ignoreDeclarationExceptions = "true"),
+            key = "user.service.event") // Routing key
     )
     public void listenUserEvent(@Payload UserServiceEventDto userServiceEventDto) {
 
