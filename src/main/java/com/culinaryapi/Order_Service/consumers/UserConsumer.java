@@ -38,10 +38,8 @@ public class UserConsumer {
             case CREATE:
             case UPDATE:
                 userService.save(userModel);
-                System.out.println("ESTOUUUUUUUUUU AQUIIIIIIIIIIIIIII");
                 break;
             case DELETE:
-                userService.delete(userEventDto.getUserId());
                 break;
         }
     }

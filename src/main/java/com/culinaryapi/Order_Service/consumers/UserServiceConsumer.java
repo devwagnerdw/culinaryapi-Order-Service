@@ -61,6 +61,7 @@ public class UserServiceConsumer {
         addressModel.setPostalCode(userServiceEventDto.getPostalCode());
         addressModel.setCountry(userServiceEventDto.getCountry());
         addressModel.setUser(userModel);
+        addressModel.setAddressStatus(userServiceEventDto.getAddressStatus());
         return addressModel;
     }
 }

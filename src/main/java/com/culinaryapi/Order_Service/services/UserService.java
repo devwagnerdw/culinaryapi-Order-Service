@@ -10,8 +10,5 @@ import java.util.UUID;
 public interface UserService {
 
     void save(UserModel userModel);
-
-    void delete(UUID userId);
-
     Optional<UserModel> findById(UUID userId);
 }

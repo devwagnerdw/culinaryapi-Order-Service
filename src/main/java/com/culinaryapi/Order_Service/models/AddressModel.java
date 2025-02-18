@@ -11,6 +11,8 @@ public class AddressModel {
     @Id
     private UUID addressId;
 
+    private String addressStatus;
+
     private String street;
     private String city;
     private String state;
@@ -29,6 +31,14 @@ public class AddressModel {
 
     public void setAddressId(UUID addressId) {
         this.addressId = addressId;
+    }
+
+    public String getAddressStatus() {
+        return addressStatus;
+    }
+
+    public void setAddressStatus(String addressStatus) {
+        this.addressStatus = addressStatus;
     }
 
     public String getStreet() {

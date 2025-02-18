@@ -31,8 +31,8 @@ Culinary:
       menuEventExchange: Culinary.MenuService
     queue:
       userEventQueue:
-        name: Culinary.userevent.ms.OrderService
+        name: Culinary.UserEvent.OrderService
       userServiceEventQueue:
-        name: Culinary.userserviceevent.ms.OrderService
+        name: Culinary.UserServiceEvent.OrderService
       menuServiceEventQueue:
-        name: Culinary.MenuService.ms.OrderService
+        name: Culinary.MenuEvent.OrderService

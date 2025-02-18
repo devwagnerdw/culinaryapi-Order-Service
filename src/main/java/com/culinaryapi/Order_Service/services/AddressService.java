@@ -12,4 +12,5 @@ public interface AddressService {
     Optional<AddressModel> findById(UUID addressId);
 
     Optional<AddressModel> findByUserIdAndAddressId(UUID userId, UUID addressId);
+
 }

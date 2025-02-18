@@ -1,10 +1,13 @@
 package com.culinaryapi.Order_Service.services.impl;
 
+import com.culinaryapi.Order_Service.models.AddressModel;
 import com.culinaryapi.Order_Service.models.UserModel;
+import com.culinaryapi.Order_Service.repositories.AddressRepository;
 import com.culinaryapi.Order_Service.repositories.UserRepository;
 import com.culinaryapi.Order_Service.services.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,11 +25,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void save(UserModel userModel) {
         userRepository.save(userModel);
-    }
-
-    @Override
-    public void delete(UUID userId) {
-        userRepository.deleteById(userId);
     }
 
     @Override
