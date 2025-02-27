@@ -5,17 +5,21 @@ import com.culinaryapi.Order_Service.models.OrderModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.ResponseEntity;
 
 import java.util.UUID;
 
 public interface OrderService {
 
-    OrderModel registerOrder(OrderDto orderDto);
+    ResponseEntity<Object> registerOrder(OrderDto orderDto);
 
-    OrderModel updateStatusOrder(UUID orderId, OrderDto orderDto);
+    ResponseEntity<Object> updateStatusOrder(UUID orderId, OrderDto orderDto);
 
     Page<OrderModel> findAllByUserId(UUID userId, Specification<OrderModel> spec, Pageable pageable);
 
     Page<OrderModel> findAll(Specification<OrderModel> spec, Pageable pageable);
+
+    ResponseEntity<Page<OrderModel>> getOrdersByUser(UUID userId, Pageable pageable);
 }
+
 

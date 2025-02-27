@@ -12,9 +12,12 @@ import com.culinaryapi.Order_Service.repositories.ProductRepository;
 import com.culinaryapi.Order_Service.repositories.UserRepository;
 import com.culinaryapi.Order_Service.services.OrderService;
 import com.culinaryapi.Order_Service.specifications.SpecificationTemplate;
+import com.culinaryapi.Order_Service.utils.PermissionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -32,18 +35,29 @@ public class OrderServiceImpl implements OrderService {
     private final AddressRepository addressRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final PermissionUtils permissionUtils;
 
-    public OrderServiceImpl(OrderRepository orderRepository, AddressRepository addressRepository, UserRepository userRepository, ProductRepository productRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, AddressRepository addressRepository, UserRepository userRepository, ProductRepository productRepository, PermissionUtils permissionUtils) {
         this.orderRepository = orderRepository;
         this.addressRepository = addressRepository;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
+        this.permissionUtils = permissionUtils;
     }
 
     @Override
-    public OrderModel registerOrder(OrderDto orderDto) {
+    public ResponseEntity<Object> registerOrder(OrderDto orderDto) {
         UserModel userModel = userRepository.findById(orderDto.getUserId())
                 .orElseThrow(() -> new NotFoundException("User not found: " + orderDto.getUserId()));
+
+        if (!permissionUtils.hasPermission(userModel.getUserId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("You are not allowed to create a new order for another user.");
+        }
+
+        if ("BLOCKED".equalsIgnoreCase(userModel.getUserStatus())) {
+            throw new InvalidOperationException("User is blocked and cannot place orders.");
+        }
 
         AddressModel addressModel = addressRepository.findByUser_UserIdAndAddressId(orderDto.getUserId(), orderDto.getAddressId())
                 .orElseThrow(() -> new NotFoundException("Address not found: " + orderDto.getAddressId()));
@@ -91,11 +105,11 @@ public class OrderServiceImpl implements OrderService {
         orderModel.setOrderItems(orderItems);
 
         orderRepository.save(orderModel);
-        return orderModel;
+        return ResponseEntity.ok(orderModel);
     }
 
     @Override
-    public OrderModel updateStatusOrder(UUID orderId, OrderDto orderDto) {
+    public ResponseEntity<Object>  updateStatusOrder(UUID orderId, OrderDto orderDto) {
         OrderModel orderModel = orderRepository.findById(orderId)
                 .orElseThrow(() -> new NotFoundException("Order not found: " + orderId));
 
@@ -108,7 +122,7 @@ public class OrderServiceImpl implements OrderService {
 
         orderModel.setOrderStatus(orderDto.getOrderStatus());
         orderRepository.save(orderModel);
-        return orderModel;
+        return ResponseEntity.ok(orderModel);
     }
 
     @Override
@@ -119,6 +133,17 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Page<OrderModel> findAll(Specification<OrderModel> spec, Pageable pageable) {
         return orderRepository.findAll(spec, pageable);
+    }
+
+    @Override
+    public ResponseEntity<Page<OrderModel>> getOrdersByUser(UUID userId, Pageable pageable) {
+        Page<OrderModel> orders = orderRepository.findByUser_UserId(userId, pageable);
+        if (!permissionUtils.hasPermission(userId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        return ResponseEntity.ok(orders);
+
     }
 
 

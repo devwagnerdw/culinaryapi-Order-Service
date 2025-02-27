@@ -10,5 +10,6 @@ import java.util.UUID;
 
 public interface OrderRepository extends JpaRepository<OrderModel, UUID>, JpaSpecificationExecutor<OrderModel> {
 
-    Page<OrderModel> findByUserUserId(UUID userId, Pageable pageable);
+    Page<OrderModel> findByUser_UserId(UUID userId, Pageable pageable);
+
 }
