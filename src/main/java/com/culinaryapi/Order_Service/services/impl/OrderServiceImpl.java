@@ -2,10 +2,14 @@ package com.culinaryapi.Order_Service.services.impl;
 
 import com.culinaryapi.Order_Service.dtos.OrderDto;
 import com.culinaryapi.Order_Service.dtos.OrderItemDTO;
+import com.culinaryapi.Order_Service.dtos.ResponsesDto.ErrorResponseDto;
+import com.culinaryapi.Order_Service.dtos.ResponsesDto.OrderResponseDto;
+import com.culinaryapi.Order_Service.enums.ActionType;
 import com.culinaryapi.Order_Service.enums.OrderStatus;
 import com.culinaryapi.Order_Service.exception.InvalidOperationException;
 import com.culinaryapi.Order_Service.exception.NotFoundException;
 import com.culinaryapi.Order_Service.models.*;
+import com.culinaryapi.Order_Service.publishers.OrderEventPublisher;
 import com.culinaryapi.Order_Service.repositories.AddressRepository;
 import com.culinaryapi.Order_Service.repositories.OrderRepository;
 import com.culinaryapi.Order_Service.repositories.ProductRepository;
@@ -36,17 +40,19 @@ public class OrderServiceImpl implements OrderService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final PermissionUtils permissionUtils;
+    private final OrderEventPublisher orderEventPublisher;
 
-    public OrderServiceImpl(OrderRepository orderRepository, AddressRepository addressRepository, UserRepository userRepository, ProductRepository productRepository, PermissionUtils permissionUtils) {
+    public OrderServiceImpl(OrderRepository orderRepository, AddressRepository addressRepository, UserRepository userRepository, ProductRepository productRepository, PermissionUtils permissionUtils, OrderEventPublisher orderEventPublisher) {
         this.orderRepository = orderRepository;
         this.addressRepository = addressRepository;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
         this.permissionUtils = permissionUtils;
+        this.orderEventPublisher = orderEventPublisher;
     }
 
     @Override
-    public ResponseEntity<Object> registerOrder(OrderDto orderDto) {
+    public ResponseEntity<Object> createOrder(OrderDto orderDto) {
         UserModel userModel = userRepository.findById(orderDto.getUserId())
                 .orElseThrow(() -> new NotFoundException("User not found: " + orderDto.getUserId()));
 
@@ -105,11 +111,15 @@ public class OrderServiceImpl implements OrderService {
         orderModel.setOrderItems(orderItems);
 
         orderRepository.save(orderModel);
-        return ResponseEntity.ok(orderModel);
+
+
+        orderEventPublisher.publishOrderEvent(orderModel.convertToOrderEventDto(), ActionType.CREATE);
+
+      return  ResponseEntity.status(HttpStatus.CREATED).body(orderModel.convertToOrderResponseDto());
     }
 
     @Override
-    public ResponseEntity<Object>  updateStatusOrder(UUID orderId, OrderDto orderDto) {
+    public ResponseEntity<OrderResponseDto>  updateOrderStatus(UUID orderId, OrderDto orderDto) {
         OrderModel orderModel = orderRepository.findById(orderId)
                 .orElseThrow(() -> new NotFoundException("Order not found: " + orderId));
 
@@ -122,7 +132,7 @@ public class OrderServiceImpl implements OrderService {
 
         orderModel.setOrderStatus(orderDto.getOrderStatus());
         orderRepository.save(orderModel);
-        return ResponseEntity.ok(orderModel);
+        return ResponseEntity.ok(orderModel.convertToOrderResponseDto());
     }
 
     @Override

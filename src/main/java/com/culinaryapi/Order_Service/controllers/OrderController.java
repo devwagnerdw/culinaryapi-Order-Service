@@ -1,6 +1,7 @@
 package com.culinaryapi.Order_Service.controllers;
 
 import com.culinaryapi.Order_Service.dtos.OrderDto;
+import com.culinaryapi.Order_Service.dtos.ResponsesDto.OrderResponseDto;
 import com.culinaryapi.Order_Service.exception.NotFoundException;
 import com.culinaryapi.Order_Service.models.OrderModel;
 import com.culinaryapi.Order_Service.services.OrderService;
@@ -36,15 +37,15 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<Object> registerOrder(@RequestBody @Validated(OrderDto.OrderView.NewOrderPost.class)
                                                     @JsonView(OrderDto.OrderView.NewOrderPost.class) OrderDto orderDto){
-        return orderService.registerOrder(orderDto);
+        return orderService.createOrder(orderDto);
     }
 
 
     @PreAuthorize("hasAnyRole('ADMIN', 'DELIVERY','CHEF')")
     @PutMapping("/{orderId}")
-    public ResponseEntity<Object>updateStatusOrder(@PathVariable(value = "orderId") UUID orderId,
-                                                       @RequestBody @Validated(OrderDto.OrderView.statusPut.class) OrderDto orderDto){
-        return orderService.updateStatusOrder(orderId, orderDto);
+    public ResponseEntity<OrderResponseDto>updateStatusOrder(@PathVariable(value = "orderId") UUID orderId,
+                                                             @RequestBody @Validated(OrderDto.OrderView.statusPut.class) OrderDto orderDto){
+        return orderService.updateOrderStatus(orderId, orderDto);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")

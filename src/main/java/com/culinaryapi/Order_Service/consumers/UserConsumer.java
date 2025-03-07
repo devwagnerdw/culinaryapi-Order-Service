@@ -31,7 +31,6 @@ public class UserConsumer {
     )
     public void listenUserEvent(@Payload UserEventDto userEventDto){
 
-
        var userModel = userEventDto.convertToUserModel();
 
         switch (ActionType.valueOf(userEventDto.getActionType())){

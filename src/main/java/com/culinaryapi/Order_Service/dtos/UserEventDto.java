@@ -12,6 +12,7 @@ public class UserEventDto {
 
     private UUID userId;
     private String email;
+    private String fullName;
     private String userStatus;
     private String phoneNumber;
     private String actionType;
@@ -31,6 +32,14 @@ public class UserEventDto {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getUserStatus() {

@@ -29,6 +29,7 @@ Culinary:
       userEventExchange: Culinary.userevent
       userServiceEventExchange: Culinary.userserviceevent
       menuEventExchange: Culinary.MenuService
+      orderServiceEventExchange: Culinary.OrderService
     queue:
       userEventQueue:
         name: Culinary.UserEvent.OrderService

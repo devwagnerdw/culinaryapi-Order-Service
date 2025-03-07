@@ -1,4 +1,4 @@
-package com.culinaryapi.Order_Service.dtos;
+package com.culinaryapi.Order_Service.dtos.ResponsesDto;
 
 import org.springframework.http.HttpStatus;
 

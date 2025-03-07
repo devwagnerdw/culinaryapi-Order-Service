@@ -1,25 +1,15 @@
-package com.culinaryapi.Order_Service.models;
+package com.culinaryapi.Order_Service.dtos.ResponsesDto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
 
-import java.util.Set;
 import java.util.UUID;
 
-@Entity
-@Table(name = "TB_USERS")
-public class UserModel {
-    @Id
+public class UserResponseDto {
+
     private UUID userId;
     private String email;
     private String fullName;
     private String phoneNumber;
     private String userStatus;
-
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private Set<AddressModel> addresses;
 
     public UUID getUserId() {
         return userId;
@@ -59,13 +49,5 @@ public class UserModel {
 
     public void setUserStatus(String userStatus) {
         this.userStatus = userStatus;
-    }
-
-    public Set<AddressModel> getAddresses() {
-        return addresses;
-    }
-
-    public void setAddresses(Set<AddressModel> addresses) {
-        this.addresses = addresses;
     }
 }

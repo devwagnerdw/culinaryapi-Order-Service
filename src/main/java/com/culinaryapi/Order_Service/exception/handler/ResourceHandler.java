@@ -2,7 +2,7 @@ package com.culinaryapi.Order_Service.exception.handler;
 
 
 
-import com.culinaryapi.Order_Service.dtos.ErrorResponseDto;
+import com.culinaryapi.Order_Service.dtos.ResponsesDto.ErrorResponseDto;
 import com.culinaryapi.Order_Service.exception.*;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
