@@ -14,7 +14,7 @@ public class OrderEventDto {
     private String fullName;
     private String phoneNumber;
     private String actionType;
-    private AddressDto addressModel;
+    private String address;
 
 
     public UUID getOrderId() {
@@ -25,12 +25,12 @@ public class OrderEventDto {
         this.orderId = orderId;
     }
 
-    public AddressDto getAddressModel() {
-        return addressModel;
+    public String getAddress() {
+        return address;
     }
 
-    public void setAddressModel(AddressDto addressModel) {
-        this.addressModel = addressModel;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getActionType() {
@@ -79,5 +79,14 @@ public class OrderEventDto {
 
     public void setUserId(UUID userId) {
         this.userId = userId;
+    }
+    public static String formatAddress(AddressDto addressDto) {
+        return String.join(",",
+                addressDto.getStreet(),
+                addressDto.getCity(),
+                addressDto.getState(),
+                addressDto.getPostalCode(),
+                addressDto.getCountry()
+        );
     }
 }

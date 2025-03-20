@@ -1,25 +1,12 @@
 package com.culinaryapi.Order_Service.dtos;
 
-import java.util.UUID;
-
 public class AddressDto {
 
-
-
-    private UUID addressId;
     private String street;
     private String city;
     private String state;
     private String postalCode;
     private String country;
-
-    public UUID getAddressId() {
-        return addressId;
-    }
-
-    public void setAddressId(UUID addressId) {
-        this.addressId = addressId;
-    }
 
     public String getStreet() {
         return street;

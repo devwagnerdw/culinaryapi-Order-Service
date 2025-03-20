@@ -13,6 +13,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.culinaryapi.Order_Service.dtos.OrderEventDto.formatAddress;
+
 @Entity
 @Table(name = "TB_Order")
 public class OrderModel {
@@ -111,14 +113,16 @@ public class OrderModel {
         orderEventDto.setPhoneNumber(user.getPhoneNumber());
 
         var addressDto = new AddressDto();
-        addressDto.setAddressId(address.getAddressId());
         addressDto.setStreet(address.getStreet());
         addressDto.setCity(address.getCity());
         addressDto.setState(address.getState());
         addressDto.setPostalCode(address.getPostalCode());
         addressDto.setCountry(address.getCountry());
 
-        orderEventDto.setAddressModel(addressDto);
+        String formattedAddress = formatAddress(addressDto);
+        orderEventDto.setAddress(formattedAddress);
+
+        System.out.println(formattedAddress);
         return orderEventDto;
 
     }
