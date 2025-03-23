@@ -26,8 +26,8 @@ spring:
 Culinary:
   broker:
     exchange:
-      userEventExchange: Culinary.userevent
-      userServiceEventExchange: Culinary.userserviceevent
+      userEventExchange: Culinary.userEvent
+      userServiceEventExchange: Culinary.userServiceEvent
       menuEventExchange: Culinary.MenuService
       orderServiceEventExchange: Culinary.OrderService
     queue:
