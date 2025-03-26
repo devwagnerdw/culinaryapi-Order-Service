@@ -28,6 +28,7 @@ Culinary:
     exchange:
       userEventExchange: Culinary.userEvent
       userServiceEventExchange: Culinary.userServiceEvent
+      deliveryEventExchange: Culinary.deliveryEvent
       menuEventExchange: Culinary.MenuService
       orderServiceEventExchange: Culinary.OrderService
     queue:
@@ -37,5 +38,7 @@ Culinary:
         name: Culinary.UserServiceEvent.OrderService
       menuServiceEventQueue:
         name: Culinary.MenuEvent.OrderService
+      deliveryServiceEventQueue:
+        name: Culinary.DeliveryEvent.OrderService
   auth:
     jwt-secret: ZHsOVU5Y6gGU3/S9WZfY5W/Ni6ZixK0I9rZ44MudSRuNYvib+ZoeP/YQNfEvXlDhEgV60Ma8csbcv6ALfOjdyMg==

@@ -2,6 +2,7 @@ package com.culinaryapi.Order_Service.services;
 
 import com.culinaryapi.Order_Service.dtos.OrderDto;
 import com.culinaryapi.Order_Service.dtos.ResponsesDto.OrderResponseDto;
+import com.culinaryapi.Order_Service.enums.OrderStatus;
 import com.culinaryapi.Order_Service.models.OrderModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

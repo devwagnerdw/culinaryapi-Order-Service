@@ -102,7 +102,7 @@ public class OrderServiceImpl implements OrderService {
         orderModel.setOrderDate(LocalDateTime.now());
         orderModel.setTotalAmount(totalAmount);
         orderModel.setAddress(addressModel);
-        orderModel.setOrderStatus(OrderStatus.PROCESSING);
+        orderModel.setOrderStatus(OrderStatus.PENDING);
         orderModel.setUser(userModel);
 
         for (OrderItemModel item : orderItems) {
@@ -112,9 +112,6 @@ public class OrderServiceImpl implements OrderService {
 
         orderRepository.save(orderModel);
 
-
-        orderEventPublisher.publishOrderEvent(orderModel.convertToOrderEventDto(), ActionType.CREATE);
-
       return  ResponseEntity.status(HttpStatus.CREATED).body(orderModel.convertToOrderResponseDto());
     }
 
@@ -123,15 +120,15 @@ public class OrderServiceImpl implements OrderService {
         OrderModel orderModel = orderRepository.findById(orderId)
                 .orElseThrow(() -> new NotFoundException("Order not found: " + orderId));
 
-        OrderStatus currentStatus = orderModel.getOrderStatus();
         OrderStatus newStatus = orderDto.getOrderStatus();
 
-        if (!isStatusTransitionAllowed(currentStatus, newStatus)) {
-            throw new InvalidOperationException("Transition from " + currentStatus + " to " + newStatus + " is not allowed.");
+        orderModel.setOrderStatus(newStatus);
+        orderRepository.save(orderModel);
+
+        if (newStatus == OrderStatus.READY_FOR_PICKUP) {
+            orderEventPublisher.publishOrderEvent(orderModel.convertToOrderEventDto(), ActionType.CREATE);
         }
 
-        orderModel.setOrderStatus(orderDto.getOrderStatus());
-        orderRepository.save(orderModel);
         return ResponseEntity.ok(orderModel.convertToOrderResponseDto());
     }
 
@@ -156,22 +153,4 @@ public class OrderServiceImpl implements OrderService {
 
     }
 
-
-    private boolean isStatusTransitionAllowed(OrderStatus currentStatus, OrderStatus newStatus) {
-        switch (currentStatus) {
-            case PENDING:
-                return newStatus == OrderStatus.PROCESSING || newStatus == OrderStatus.CANCELED;
-            case PROCESSING:
-                return newStatus == OrderStatus.SHIPPED || newStatus == OrderStatus.CANCELED;
-            case SHIPPED:
-                return newStatus == OrderStatus.DELIVERED || newStatus == OrderStatus.RETURNED;
-            case DELIVERED:
-                return newStatus == OrderStatus.RETURNED;
-            case CANCELED:
-            case RETURNED:
-                return false;
-            default:
-                throw new IllegalArgumentException("Invalid current status: " + currentStatus);
-        }
-    }
 }
