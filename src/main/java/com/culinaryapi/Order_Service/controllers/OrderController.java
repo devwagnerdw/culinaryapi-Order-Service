@@ -2,7 +2,6 @@ package com.culinaryapi.Order_Service.controllers;
 
 import com.culinaryapi.Order_Service.dtos.OrderDto;
 import com.culinaryapi.Order_Service.dtos.ResponsesDto.OrderResponseDto;
-import com.culinaryapi.Order_Service.exception.NotFoundException;
 import com.culinaryapi.Order_Service.models.OrderModel;
 import com.culinaryapi.Order_Service.services.OrderService;
 import com.culinaryapi.Order_Service.specifications.SpecificationTemplate;
