@@ -2,7 +2,6 @@ package com.culinaryapi.Order_Service.services.impl;
 
 import com.culinaryapi.Order_Service.dtos.OrderDto;
 import com.culinaryapi.Order_Service.dtos.OrderItemDTO;
-import com.culinaryapi.Order_Service.dtos.ResponsesDto.ErrorResponseDto;
 import com.culinaryapi.Order_Service.dtos.ResponsesDto.OrderResponseDto;
 import com.culinaryapi.Order_Service.enums.ActionType;
 import com.culinaryapi.Order_Service.enums.OrderStatus;
@@ -57,8 +56,7 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new NotFoundException("User not found: " + orderDto.getUserId()));
 
         if (!permissionUtils.hasPermission(userModel.getUserId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("You are not allowed to create a new order for another user.");
+            throw new InvalidOperationException("You are not allowed to create a new order for another user.");
         }
 
         if ("BLOCKED".equalsIgnoreCase(userModel.getUserStatus())) {
